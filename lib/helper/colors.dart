@@ -1,7 +1,8 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
-class PokeTypeColor{
+class PokeTypeColor {
   static const Color fairy = Color(0xFFE69EAC);
   static const Color ice = Color(0xFF9AD6DF);
   static const Color grass = Color(0xFF74CB48);
@@ -21,3 +22,4 @@ class PokeTypeColor{
   static const Color fighting = Color(0xFFC12239);
   static const Color normal = Color(0xFFAAA67F);
 }
+

@@ -1,0 +1,20 @@
+enum PokeTypeEnum {
+  fairy,
+  ice,
+  grass,
+  steal,
+  rock,
+  dark,
+  physic,
+  water,
+  ghost,
+  ground,
+  dragon,
+  electric,
+  fire,
+  bug,
+  poison,
+  flying,
+  fighting,
+  normal
+}
