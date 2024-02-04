@@ -11,7 +11,7 @@ class HomeUseCase {
   }
 
   Future<void> addData(SampleModel data) {
-    return repository.getData(data);
+    return repository.addData(data);
   }
 
   Future<void> updateData(SampleModel data) {

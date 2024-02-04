@@ -2,7 +2,7 @@ import 'package:flutter_pokemon/features/home/data/sample_model.dart';
 import 'package:flutter_pokemon/features/home/domain/repositories/home_repository.dart';
 
 class HomeRepositoryImpl implements HomeRepository {
-  List<SampleModel> _data = []; // Placeholder for data
+  final List<SampleModel> _data = [];
 
   @override
   Future<List<SampleModel>> getAllData() async {
@@ -10,7 +10,7 @@ class HomeRepositoryImpl implements HomeRepository {
   }
 
   @override
-  Future<void> getData(SampleModel data) async {
+  Future<void> addData(SampleModel data) async {
     _data.add(data);
   }
 

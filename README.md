@@ -107,9 +107,6 @@ lib/
 |   |   |       |-- feature1_usecase.dart
 |   |   |
 |   |   |-- data/
-|   |       |-- datasources/
-|   |       |   |-- feature1_remote_data_source.dart
-|   |       |
 |   |       |-- models/
 |   |           |-- feature1_model.dart
 |   |
