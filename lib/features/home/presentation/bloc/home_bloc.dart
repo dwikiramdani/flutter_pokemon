@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pokemon/features/home/data/models/sample_model.dart';
+import 'package:flutter_pokemon/features/home/data/sample_model.dart';
 import 'package:flutter_pokemon/features/home/domain/usecases/home_usecase.dart';
 
 part 'home_state.dart';

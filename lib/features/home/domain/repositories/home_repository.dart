@@ -1,4 +1,4 @@
-import 'package:flutter_pokemon/features/home/data/models/sample_model.dart';
+import 'package:flutter_pokemon/features/home/data/sample_model.dart';
 
 abstract class HomeRepository {
   Future<List<SampleModel>> getAllData();

@@ -1,4 +1,4 @@
-import 'package:flutter_pokemon/features/home/data/models/sample_model.dart';
+import 'package:flutter_pokemon/features/home/data/sample_model.dart';
 import 'package:flutter_pokemon/features/home/domain/repositories/home_repository.dart';
 
 class HomeUseCase {

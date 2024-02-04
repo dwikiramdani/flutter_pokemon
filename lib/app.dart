@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<HomeBloc>(
           create: (context) {
-            // Pass dependencies to Feature1Bloc constructor
+            // Pass dependencies to HomeBloc constructor
             final HomeRepositoryImpl repository = HomeRepositoryImpl();
             final HomeUseCase useCase = HomeUseCase(repository);
             return HomeBloc(useCase);
