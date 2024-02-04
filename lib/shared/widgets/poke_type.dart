@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pokemon/helper/utils.dart';
+import 'package:flutter_pokemon/shared/helper/utils.dart';
 
 Widget buildPokeType(String colorTypeString) {
   Color? typeColor = getPokeTypeColor(colorTypeString);
