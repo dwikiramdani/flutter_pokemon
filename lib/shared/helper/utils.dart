@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_pokemon/consts/poke_type_enum.dart';
-import 'package:flutter_pokemon/helper/colors.dart';
+import 'package:flutter_pokemon/shared/consts/poke_type_enum.dart';
+import 'package:flutter_pokemon/shared/consts/colors.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 PokeTypeEnum? stringToEnum(List<PokeTypeEnum> values, String colorString) {
   for (var value in values) {
@@ -11,7 +13,7 @@ PokeTypeEnum? stringToEnum(List<PokeTypeEnum> values, String colorString) {
   return null;
 }
 
-Color getPokeTypeColor(String typeEnumString){
+Color getPokeTypeColor(String typeEnumString) {
   Color? typeColor;
 
   PokeTypeEnum? selectedColor = stringToEnum(

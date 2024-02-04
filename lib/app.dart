@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pokemon/cubits/detail_cubit.dart';
-import 'package:flutter_pokemon/cubits/home_cubit.dart';
-import 'package:flutter_pokemon/screens/home_view.dart';
+import 'package:flutter_pokemon/features/home/domain/repositories/home_repository_impl.dart';
+import 'package:flutter_pokemon/features/home/domain/usecases/home_usecase.dart';
+import 'package:flutter_pokemon/features/home/presentation/bloc/home_bloc.dart';
+import 'package:flutter_pokemon/features/home/presentation/home_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -11,15 +12,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<HomeCubit>(
-          create: (context) => HomeCubit(),
-        ),
-        BlocProvider<DetailCubit>(
-          create: (context) => DetailCubit(),
+        BlocProvider<HomeBloc>(
+          create: (context) {
+            // Pass dependencies to Feature1Bloc constructor
+            final HomeRepositoryImpl repository = HomeRepositoryImpl();
+            final HomeUseCase useCase = HomeUseCase(repository);
+            return HomeBloc(useCase);
+          },
         ),
       ],
-      child: const MaterialApp(
-        home: MyHomePage(title: 'Pokemon'),
+      child: MaterialApp(
+        title: "TITLE",
+        initialRoute: '/home',
+        routes: <String, WidgetBuilder>{
+          "/home": (context) => const HomeView(),
+        },
       ),
     );
   }
