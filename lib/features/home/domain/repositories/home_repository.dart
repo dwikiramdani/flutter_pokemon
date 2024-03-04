@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pokemon/core/network/api_client.dart';
 import 'package:flutter_pokemon/core/network/endpoint.dart';
 import 'package:flutter_pokemon/features/home/data/models/book_item.dart';
+import 'package:flutter_pokemon/features/home/data/models/book_item_detail.dart';
 import 'package:flutter_pokemon/features/home/data/models/sample_model.dart';
 
 class HomeRepository {
@@ -31,7 +32,7 @@ class HomeRepository {
   List<Item> portalItems = [];
   Future<List<Item>> getPortalItems() async {
     try {
-      String url = Endpoint.baseOpenKube + Endpoint.portalBookItems;
+      String url = Endpoint.baseOpenKube + Endpoint.openApiListOfItem;
       final response = await ApiClient.instance.dio.get(
         url,
         options: Options(
@@ -49,9 +50,29 @@ class HomeRepository {
       debugPrint("Exeption Get: $e");
       portalItems = [];
     }
-    print("Portal count: ${portalItems.length}");
-    print("Portal count: ${portalItems[0].href}");
     return portalItems;
+  }
+
+  BookDetails? portalItemDetail;
+  Future<BookDetails> getPortalItemById(int bookId) async {
+    try {
+      String url =
+          "${Endpoint.baseOpenKube}${Endpoint.openApiListOfItem}/$bookId";
+      final response = await ApiClient.instance.dio.get(
+        url,
+        options: Options(
+          headers: await ApiClient.instance.getHeaders(),
+        ),
+      );
+      print("Response Detail: ${response.data}");
+      if (response.statusCode == 200) {
+        portalItemDetail = BookDetails.fromJson(response.data);
+      }
+    } catch (e) {
+      debugPrint("Exeption Get: $e");
+      portalItemDetail = null;
+    }
+    return portalItemDetail!;
   }
   // Future<void> getPortalItemsDetail();
   // Future<void> getPortalSharedLibraryItem();

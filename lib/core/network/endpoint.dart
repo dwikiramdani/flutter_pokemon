@@ -7,13 +7,15 @@ class Endpoint {
 
   static const baseOpenKube = 'https://openapi.kube.eperpus.com';
   static const portalBookItems = '/portal-admin/items';
+  static const openApiListOfItem = '/openapi/items';
+  static const openApiReadBook = '/openapi/organizations/read-book';
 
-  static String bookItems(String sharedLibrary) {
-    return "/openapi/organizations/$sharedLibrary/items";
+  static String openApiOrganizationListOfItem(int organizationId, int itemId) {
+    return "/openapi/organizations/$organizationId";
   }
 
-  static String readBooks(int organizationId, int itemId) {
-    return "/openapi/organizations/$organizationId/read-book/$itemId";
+  static String openApiOrganizationItemById(int organizationId, int itemId) {
+    return "/openapi/organizations/$organizationId/items/$itemId";
   }
 
   static String downloadBook(String expires, String signature) {

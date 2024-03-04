@@ -260,13 +260,19 @@ class _HomeViewState extends State<HomeView> {
         return ListTile(
           title: buildItemCardWithButton(item),
           onTap: isShowItemOwned
-              ? () {}
-              // ? () => handleItemTap(item.href!, item.type!)
+              // ? () {
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(
+              //         builder: (context) => HomeDetailView(bookId: item.id),
+              //       ),
+              //     );
+              //   }
+              ? () => handleItemTap(item.href!, item.type!)
               : () {
-                  Navigator.pushNamed(
-                    context,
-                    '/productDetail',
-                    arguments: products[index],
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => HomeDetailView(bookId: item.id),
+                    ),
                   );
                 },
         );
@@ -307,9 +313,15 @@ class _HomeViewState extends State<HomeView> {
         },
         listener: (context, state) {
           if (state is HomeDataLoadedState) {
+            setState(() {
+              isShowItemOwned = false;
+            });
             print("state is HomeDataLoadedState");
           }
           if (state is HomeOwnedDataLoadedState) {
+            setState(() {
+              isShowItemOwned = true;
+            });
             print("state is HomeOwnedDataLoadedState");
           }
         },
