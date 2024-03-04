@@ -3,8 +3,9 @@ import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 /// Represents MyPdfView for Navigation
 class MyPdfView extends StatefulWidget {
-  const MyPdfView({super.key});
+  const MyPdfView({super.key, this.sourceUrl});
 
+  final String? sourceUrl;
   @override
   _MyPdfView createState() => _MyPdfView();
 }
@@ -36,7 +37,7 @@ class _MyPdfView extends State<MyPdfView> {
         ],
       ),
       body: SfPdfViewer.network(
-        'https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf',
+        widget.sourceUrl!,
         key: _pdfViewerKey,
       ),
     );

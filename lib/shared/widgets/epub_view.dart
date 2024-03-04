@@ -8,8 +8,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
 
 class MyEpubView extends StatefulWidget {
-  const MyEpubView({super.key});
+  const MyEpubView({super.key, this.sourceUrl});
 
+  final String? sourceUrl;
   @override
   _MyEpubViewState createState() => _MyEpubViewState();
 }
@@ -133,7 +134,7 @@ class _MyEpubViewState extends State<MyEpubView> {
     if (!File(path).existsSync()) {
       await file.create();
       await dio.download(
-        "https://vocsyinfotech.in/envato/cc/flutter_ebook/uploads/22566_The-Racketeer---John-Grisham.epub",
+        widget.sourceUrl!,
         path,
         deleteOnError: true,
         onReceiveProgress: (receivedBytes, totalBytes) {

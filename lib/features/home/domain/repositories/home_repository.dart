@@ -5,4 +5,13 @@ abstract class HomeRepository {
   Future<void> getData(SampleModel data);
   Future<void> updateData(SampleModel data);
   Future<void> deleteData(int id);
+
+  Future<void> getPortalItems();
+  Future<void> getPortalItemsDetail();
+  Future<void> getPortalSharedLibraryItem();
+
+  Future<void> getOpenApiSearchItem();
+  Future<void> getOpenApiReadBook();
+  Future<void> getOpenApiBookDownload();
+  Future<void> setOpenApiKey();
 }

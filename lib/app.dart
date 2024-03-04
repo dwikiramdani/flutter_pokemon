@@ -3,9 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_pokemon/features/home/domain/repositories/home_repository_impl.dart';
 import 'package:flutter_pokemon/features/home/domain/usecases/home_usecase.dart';
 import 'package:flutter_pokemon/features/home/presentation/bloc/home_bloc.dart';
-import 'package:flutter_pokemon/features/home/presentation/epub_view.dart';
+import 'package:flutter_pokemon/features/home/presentation/home_detail_view.dart';
+import 'package:flutter_pokemon/shared/widgets/epub_view.dart';
 import 'package:flutter_pokemon/features/home/presentation/home_view.dart';
-import 'package:flutter_pokemon/features/home/presentation/pdf_view.dart';
+import 'package:flutter_pokemon/shared/widgets/pdf_view.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         initialRoute: '/home',
         routes: <String, WidgetBuilder>{
           "/home": (context) => const HomeView(),
+          "/productDetail": (context) => HomeDetailView(),
           "/my_epub_view": (context) => const MyEpubView(),
           "/my_pdf_view": (context) => const MyPdfView(),
         },
