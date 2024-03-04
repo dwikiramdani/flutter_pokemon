@@ -47,6 +47,7 @@ dependencies:
   permission_handler: ^11.3.0
   flutter_native_splash: ^2.2.16
   cached_network_image: ^3.3.1
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:

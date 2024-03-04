@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_pokemon/features/home/domain/repositories/home_repository_impl.dart';
-import 'package:flutter_pokemon/features/home/domain/usecases/home_usecase.dart';
 import 'package:flutter_pokemon/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_pokemon/features/home/presentation/home_detail_view.dart';
 import 'package:flutter_pokemon/shared/widgets/epub_view.dart';
@@ -15,14 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<HomeBloc>(
-          create: (context) {
-            // Pass dependencies to Feature1Bloc constructor
-            final HomeRepositoryImpl repository = HomeRepositoryImpl();
-            final HomeUseCase useCase = HomeUseCase(repository);
-            return HomeBloc(useCase);
-          },
-        ),
+        BlocProvider<HomeBloc>(create: (context) => HomeBloc()),
       ],
       child: MaterialApp(
         title: "TITLE",

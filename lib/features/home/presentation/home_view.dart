@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pokemon/features/home/data/models/book_item.dart';
+import 'package:flutter_pokemon/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_pokemon/features/home/presentation/home_detail_view.dart';
 import 'package:flutter_pokemon/shared/widgets/epub_view.dart';
 import 'package:flutter_pokemon/shared/widgets/pdf_view.dart';
@@ -50,6 +53,7 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
+    context.read<HomeBloc>().fetchPortalItems();
     super.initState();
   }
 
@@ -134,7 +138,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget buildItemCardWithButton() {
+  Widget buildItemCardWithButton(Item item) {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
@@ -150,10 +154,10 @@ class _HomeViewState extends State<HomeView> {
           Row(
             children: [
               CachedNetworkImage(
-                height: 120,
-                width: 72,
+                height: 160,
+                width: 96,
                 fit: BoxFit.fill,
-                imageUrl: "http://via.placeholder.com/160x240",
+                imageUrl: item.images.first.href,
                 placeholder: (context, url) => new CircularProgressIndicator(),
                 errorWidget: (context, url, error) => new Icon(Icons.error),
               ),
@@ -163,37 +167,101 @@ class _HomeViewState extends State<HomeView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Title"),
                     Text(
-                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse id mattis orci. Phasellus molestie justo sit amet tincidunt aliquet. Proin a sem vel odio eleifend ornare",
-                      maxLines: 3,
-                    )
+                      item.title!,
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      item.subtitle!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black38,
+                      ),
+                    ),
+                    Text(
+                      item.vendor.title,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black38,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Dimiliki",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                          "0",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Eceran",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        Text(
+                          "${item.offers.first.price.idr.net}",
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.greenAccent),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.lightBlue,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          "Tambah ke Keranjang",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: 8),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 20)),
-            onPressed: () {},
-            child: const Text('Press me'),
           ),
         ],
       ),
     );
   }
 
-  Widget buildListOfItem() {
+  Widget buildListOfItem(List<Item> items) {
     return ListView.builder(
-      itemCount: itemList.length,
+      itemCount: items.length,
       itemBuilder: (context, index) {
-        Book item = itemList[index];
+        Item item = items[index];
         return ListTile(
-          title: buildItemCardWithButton(),
+          title: buildItemCardWithButton(item),
           onTap: isShowItemOwned
-              ? () => handleItemTap(item.href!, item.type!)
+              ? () {}
+              // ? () => handleItemTap(item.href!, item.type!)
               : () {
                   Navigator.pushNamed(
                     context,
@@ -227,7 +295,25 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: Text('OpenAPI Home'),
       ),
-      body: isShowItemOwned ? buildListOfItemOwned() : buildListOfItem(),
+      body: BlocConsumer<HomeBloc, HomeState>(
+        builder: (context, state) {
+          if (state is HomeDataLoadedState) {
+            return buildListOfItem(state.data);
+          }
+          if (state is HomeOwnedDataLoadedState) {
+            return buildListOfItemOwned();
+          }
+          return Container();
+        },
+        listener: (context, state) {
+          if (state is HomeDataLoadedState) {
+            print("state is HomeDataLoadedState");
+          }
+          if (state is HomeOwnedDataLoadedState) {
+            print("state is HomeOwnedDataLoadedState");
+          }
+        },
+      ),
       drawer: Drawer(
         child: ListView(
           children: [
@@ -242,18 +328,14 @@ class _HomeViewState extends State<HomeView> {
             ListTile(
               title: Text('Explore Book'),
               onTap: () {
-                setState(() {
-                  isShowItemOwned = false;
-                });
+                context.read<HomeBloc>().fetchPortalItems();
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: Text('My Book'),
               onTap: () {
-                setState(() {
-                  isShowItemOwned = true;
-                });
+                context.read<HomeBloc>().fetchOwnedItems();
                 Navigator.pop(context);
               },
             ),

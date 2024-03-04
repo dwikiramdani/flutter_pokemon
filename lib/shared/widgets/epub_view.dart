@@ -99,25 +99,13 @@ class _MyEpubViewState extends State<MyEpubView> {
           title: const Text('Vocsy Plugin E-pub example'),
         ),
         body: Center(
-          child: loading
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    Text('Downloading.... E-pub'),
-                  ],
-                )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        onOpenEpub();
-                      },
-                      child: Text('Open Online E-pub'),
-                    ),
-                  ],
-                ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              Text('Downloading.... E-pub'),
+            ],
+          )
         ),
       ),
     );
