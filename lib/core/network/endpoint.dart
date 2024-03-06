@@ -8,6 +8,7 @@ class Endpoint {
   static const baseOpenKube = 'https://openapi.kube.eperpus.com';
   static const portalBookItems = '/portal-admin/items';
   static const openApiListOfItem = '/openapi/items';
+  static const openApiListOfOwnedItem = '/openapi/organizations/items';
   static const openApiReadBook = '/openapi/organizations/read-book';
 
   static String openApiOrganizationListOfItem(int organizationId, int itemId) {

@@ -8,10 +8,19 @@ class HomeInitialState extends HomeState {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class HomeLoadingProcess extends HomeState {
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+}
+
 class HomeDataLoadedState extends HomeState {
   final List<Item> data;
+  bool isNextEnable = false;
+  bool isPreviousEnable = false;
+  int page = 1;
 
-  HomeDataLoadedState(this.data);
+  HomeDataLoadedState(this.data, this.isNextEnable, this.isPreviousEnable, this.page);
 
   @override
   // TODO: implement props
@@ -19,7 +28,9 @@ class HomeDataLoadedState extends HomeState {
 }
 
 class HomeOwnedDataLoadedState extends HomeState {
-  HomeOwnedDataLoadedState();
+  final List<OwnedItem> data;
+
+  HomeOwnedDataLoadedState(this.data);
 
   @override
   // TODO: implement props

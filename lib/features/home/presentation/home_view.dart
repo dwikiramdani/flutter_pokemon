@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_pokemon/core/network/endpoint.dart';
 import 'package:flutter_pokemon/features/home/data/models/book_item.dart';
+import 'package:flutter_pokemon/features/home/data/models/owned_item.dart';
 import 'package:flutter_pokemon/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_pokemon/features/home/presentation/home_detail_view.dart';
 import 'package:flutter_pokemon/shared/widgets/epub_view.dart';
@@ -16,44 +18,13 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  // Sample list of items
-  List<Book> itemList = [
-    Book(
-      title: "Buku PDF",
-      href:
-          "https://cdn.syncfusion.com/content/PDFViewer/flutter-succinctly.pdf",
-      type: "pdf",
-    ),
-    Book(
-      title: "Buku EPUB",
-      href:
-          "https://vocsyinfotech.in/envato/cc/flutter_ebook/uploads/22566_The-Racketeer---John-Grisham.epub",
-      type: "epub",
-    )
-  ];
-
-  final List<Product> products = [
-    Product(
-      name: 'Product 1',
-      description: 'Description for Product 1',
-      price: 19.99,
-      imageUrl: 'http://via.placeholder.com/160x240',
-    ),
-    Product(
-      name: 'Product 2',
-      description: 'Description for Product 1',
-      price: 19.99,
-      imageUrl: 'http://via.placeholder.com/160x240',
-    ),
-    // Add more products as needed
-  ];
-
-  // Controller for the text field
-  TextEditingController textFieldController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
+  int currentPage = 1;
+  int itemsPerPage = 10;
 
   @override
   void initState() {
-    context.read<HomeBloc>().fetchPortalItems();
+    context.read<HomeBloc>().fetchOpenApiListOfItems();
     super.initState();
   }
 
@@ -87,51 +58,96 @@ class _HomeViewState extends State<HomeView> {
     // Add your logic for item tap here
   }
 
-  // Function to handle the confirmation button tap
-  void handleConfirmation() {
-    print('Confirmed: ${textFieldController.text}');
-    // Add your logic for confirmation here
-    // For example, you can add the text to the list
-    setState(() {
-      // Clear the text field
-      textFieldController.clear();
+  Widget buildOwnedItemCard(OwnedItem item) {
+    List<Widget> authorList = [];
+    item.authorName.forEach((element) {
+      authorList.add(Text(element));
     });
-    // Close the text field
-    Navigator.of(context).pop();
-  }
-
-  Widget buildItemCard() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 8,
+        vertical: 8,
+      ),
       width: double.infinity,
-      height: 160,
       decoration: BoxDecoration(
           color: Colors.white12,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: Colors.black12, width: 2)),
-      child: Row(
+      child: Column(
         children: [
-          CachedNetworkImage(
-            height: 120,
-            width: 72,
-            fit: BoxFit.fill,
-            imageUrl: "http://via.placeholder.com/160x240",
-            placeholder: (context, url) => new CircularProgressIndicator(),
-            errorWidget: (context, url, error) => new Icon(Icons.error),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Title"),
-                Text(
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse id mattis orci. Phasellus molestie justo sit amet tincidunt aliquet. Proin a sem vel odio eleifend ornare",
-                  maxLines: 3,
-                )
-              ],
-            ),
+          Row(
+            children: [
+              CachedNetworkImage(
+                height: 160,
+                width: 96,
+                fit: BoxFit.fill,
+                imageUrl: item.coverImage,
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      item.title!,
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Author: ${item.authorName.first}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black38,
+                      ),
+                    ),
+                    Text(
+                      'File Size: ${item.fileSize}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.black38,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => HomeDetailView(
+                              bookId: item.id,
+                              displayMode: "owned",
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.lightBlue,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          "Lihat Detail",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -158,8 +174,9 @@ class _HomeViewState extends State<HomeView> {
                 width: 96,
                 fit: BoxFit.fill,
                 imageUrl: item.images.first.href,
-                placeholder: (context, url) => new CircularProgressIndicator(),
-                errorWidget: (context, url, error) => new Icon(Icons.error),
+                placeholder: (context, url) =>
+                    const CircularProgressIndicator(),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -168,7 +185,7 @@ class _HomeViewState extends State<HomeView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      item.title!,
+                      item.title,
                       maxLines: 2,
                       style: TextStyle(
                         fontSize: 14,
@@ -176,7 +193,7 @@ class _HomeViewState extends State<HomeView> {
                       ),
                     ),
                     Text(
-                      item.subtitle!,
+                      item.subtitle,
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black38,
@@ -223,7 +240,16 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     const SizedBox(height: 8),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => HomeDetailView(
+                              bookId: item.id,
+                              displayMode: "sale",
+                            ),
+                          ),
+                        );
+                      },
                       child: Container(
                         alignment: Alignment.center,
                         width: double.infinity,
@@ -233,7 +259,7 @@ class _HomeViewState extends State<HomeView> {
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
-                          "Tambah ke Keranjang",
+                          "Lihat Detail",
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -252,62 +278,132 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget buildListOfItem(List<Item> items) {
+  Widget buildListOfItem(
+    List<Item> items, {
+    bool isNextEnable = false,
+    bool isPreviousEnable = false,
+    int page = 1,
+  }) {
+    return SingleChildScrollView(
+      physics: ScrollPhysics(),
+      child: Column(
+        children: [
+          ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              Item item = items[index];
+              return ListTile(
+                title: buildItemCardWithButton(item),
+                onTap: null,
+              );
+            },
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: isPreviousEnable
+                      ? () {
+                          context.read<HomeBloc>().onChangePreviousPage();
+                        }
+                      : null,
+                  child: const Text('Previous'),
+                ),
+                const SizedBox(width: 16),
+                Text('Page $page'),
+                const SizedBox(width: 16),
+                ElevatedButton(
+                  onPressed: isNextEnable
+                      ? () {
+                          context.read<HomeBloc>().onChangeNextPage();
+                        }
+                      : null,
+                  child: Text('Next'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildListOfItemOwned(List<OwnedItem> ownedItems) {
     return ListView.builder(
-      itemCount: items.length,
+      itemCount: ownedItems.length,
       itemBuilder: (context, index) {
-        Item item = items[index];
+        OwnedItem item = ownedItems[index];
         return ListTile(
-          title: buildItemCardWithButton(item),
-          onTap: isShowItemOwned
-              // ? () {
-              //     Navigator.of(context).push(
-              //       MaterialPageRoute(
-              //         builder: (context) => HomeDetailView(bookId: item.id),
-              //       ),
-              //     );
-              //   }
-              ? () => handleItemTap(item.href!, item.type!)
-              : () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => HomeDetailView(bookId: item.id),
-                    ),
-                  );
-                },
+          title: buildOwnedItemCard(item),
+          onTap: null,
         );
       },
     );
   }
 
-  Widget buildListOfItemOwned() {
-    return ListView.builder(
-      itemCount: itemList.length,
-      itemBuilder: (context, index) {
-        Book item = itemList[index];
-        return ListTile(
-          title: buildItemCard(),
-          onTap: () => handleItemTap(item.href!, item.type!),
-        );
+  Widget buildSearchField() {
+    return TextField(
+      controller: searchController,
+      autofocus: true,
+      decoration: InputDecoration(
+        hintText: 'Search...',
+        border: InputBorder.none,
+      ),
+      onChanged: (value) {
+        // Implement your search logic here
+        // Update the UI based on search results
+      },
+      onSubmitted: (value) {
+        context.read<HomeBloc>().fetchOpenApiListOfItems(query: value);
       },
     );
   }
 
   bool isShowItemOwned = false;
-
+  bool isShowSearchField = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('OpenAPI Home'),
+        title: isShowItemOwned ? Text('OpenAPI Home') : isShowSearchField ? buildSearchField() : Text('OpenAPI Home'),
+        actions: [
+          IconButton(
+            icon: Icon(isShowSearchField ? Icons.close : Icons.search),
+            onPressed: () {
+              setState(() {
+                isShowSearchField = !isShowSearchField;
+                if (!isShowSearchField) {
+                  searchController.clear();
+                }
+              });
+            },
+          ),
+        ],
       ),
       body: BlocConsumer<HomeBloc, HomeState>(
         builder: (context, state) {
+          if (state is HomeLoadingProcess) {
+            return Container(
+              height: double.infinity,
+              width: double.infinity,
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(),
+            );
+          }
           if (state is HomeDataLoadedState) {
-            return buildListOfItem(state.data);
+            return buildListOfItem(
+              state.data,
+              isNextEnable: state.isNextEnable,
+              isPreviousEnable: state.isPreviousEnable,
+              page: state.page,
+            );
           }
           if (state is HomeOwnedDataLoadedState) {
-            return buildListOfItemOwned();
+            return buildListOfItemOwned(state.data);
           }
           return Container();
         },
@@ -316,31 +412,29 @@ class _HomeViewState extends State<HomeView> {
             setState(() {
               isShowItemOwned = false;
             });
-            print("state is HomeDataLoadedState");
           }
           if (state is HomeOwnedDataLoadedState) {
             setState(() {
               isShowItemOwned = true;
             });
-            print("state is HomeOwnedDataLoadedState");
           }
         },
       ),
       drawer: Drawer(
         child: ListView(
           children: [
-            // UserAccountsDrawerHeader(
-            //   accountName: Text('John Doe'),
-            //   accountEmail: Text('john.doe@example.com'),
-            //   currentAccountPicture: CircleAvatar(
-            //     backgroundColor: Colors.white,
-            //     child: Icon(Icons.person),
-            //   ),
-            // ),
+            const UserAccountsDrawerHeader(
+              accountName: Text('John Doe'),
+              accountEmail: Text('john.doe@example.com'),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person),
+              ),
+            ),
             ListTile(
               title: Text('Explore Book'),
               onTap: () {
-                context.read<HomeBloc>().fetchPortalItems();
+                context.read<HomeBloc>().fetchOpenApiListOfItems();
                 Navigator.pop(context);
               },
             ),
@@ -353,37 +447,6 @@ class _HomeViewState extends State<HomeView> {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Open URL'),
-                content: TextField(
-                  controller: textFieldController,
-                  decoration: InputDecoration(hintText: 'Enter URL'),
-                ),
-                actions: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Close the dialog
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('Cancel'),
-                  ),
-                  ElevatedButton(
-                    onPressed: handleConfirmation,
-                    child: Text('Confirm'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        tooltip: 'Add Item',
-        child: Icon(Icons.add),
       ),
     );
   }

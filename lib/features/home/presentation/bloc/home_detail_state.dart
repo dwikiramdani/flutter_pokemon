@@ -8,6 +8,12 @@ class HomeInitialState extends HomeDetailState {
   List<Object?> get props => throw UnimplementedError();
 }
 
+class HomeDetailLoadingProcess extends HomeDetailState {
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
+}
+
 class HomeDetailDataLoadedState extends HomeDetailState {
   final BookDetails data;
 
@@ -18,18 +24,21 @@ class HomeDetailDataLoadedState extends HomeDetailState {
   List<Object?> get props => throw UnimplementedError();
 }
 
-class HomeOwnedDataLoadedState extends HomeDetailState {
-  HomeOwnedDataLoadedState();
+class HomeOwnedDetailDataLoadedState extends HomeDetailState {
+  final OwnedItemDetail data;
+  final ReadBook readBook;
+
+  HomeOwnedDetailDataLoadedState(this.data, this.readBook);
 
   @override
   // TODO: implement props
   List<Object?> get props => throw UnimplementedError();
 }
 
-class HomeErrorState extends HomeDetailState {
+class HomeDetailErrorState extends HomeDetailState {
   final String errorMessage;
 
-  HomeErrorState(this.errorMessage);
+  HomeDetailErrorState(this.errorMessage);
 
   @override
   // TODO: implement props
